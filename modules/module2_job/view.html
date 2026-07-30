@@ -1,0 +1,105 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-briefcase"></i> Vị trí việc làm (Nghị định 232)</h2>
+    </div>
+    <form id="job-form">
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Vị trí việc làm</label>
+                <input type="text" id="job_title" class="form-control" value="Giáo viên Tiểu học" />
+            </div>
+            <div class="form-group">
+                <label>Nhóm vị trí</label>
+                <input type="text" id="job_group" class="form-control" value="Giảng dạy" />
+            </div>
+            <div class="form-group">
+                <label>Bậc nghề nghiệp</label>
+                <input type="text" id="job_level" class="form-control" value="Hạng III" />
+            </div>
+            <div class="form-group">
+                <label>Mã số</label>
+                <input type="text" id="job_code" class="form-control" value="V.07.03.29" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Mô tả công việc</label>
+            <textarea id="job_desc" class="form-control" rows="3">Giảng dạy, giáo dục, chủ nhiệm lớp, tổ chức các hoạt động giáo dục theo quy định.</textarea>
+        </div>
+        <div class="form-group">
+            <label>Khung năng lực yêu cầu</label>
+            <textarea id="job_competency" class="form-control" rows="3">Năng lực chuyên môn, năng lực sư phạm, năng lực ứng dụng CNTT, năng lực đổi mới sáng tạo.</textarea>
+        </div>
+        <div class="form-group">
+            <label>Tiêu chuẩn</label>
+            <textarea id="job_standard" class="form-control" rows="3">Có bằng cử nhân sư phạm trở lên, có chứng chỉ bồi dưỡng nghiệp vụ.</textarea>
+        </div>
+        <div class="form-group">
+            <label>Minh chứng kèm theo</label>
+            <input type="text" id="job_evidence" class="form-control" placeholder="Liên kết đến minh chứng" />
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu vị trí việc làm</button>
+    </form>
+</div>
+
+<!-- Bảng tự đánh giá theo tiêu chí -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-clipboard-list"></i> Tự đánh giá năng lực theo NĐ 232</h3>
+    </div>
+    <form id="self-assessment-form">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nhóm năng lực</th>
+                        <th>Tiêu chí</th>
+                        <th>Mức độ (1-5)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-blue">Năng lực chung</span></td>
+                        <td>Phẩm chất đạo đức, tư tưởng chính trị</td>
+                        <td><input type="number" id="sa_ethics" class="form-control" min="1" max="5" value="4" style="width:80px;" /></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-green">Chuyên môn</span></td>
+                        <td>Lập kế hoạch, phát triển chương trình môn học</td>
+                        <td><input type="number" id="sa_planning" class="form-control" min="1" max="5" value="4" style="width:80px;" /></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-green">Chuyên môn</span></td>
+                        <td>Phương pháp dạy học, đánh giá học sinh</td>
+                        <td><input type="number" id="sa_method" class="form-control" min="1" max="5" value="4" style="width:80px;" /></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-purple">CNTT & CĐS</span></td>
+                        <td>Ứng dụng công nghệ, AI vào giảng dạy</td>
+                        <td><input type="number" id="sa_ict" class="form-control" min="1" max="5" value="4" style="width:80px;" /></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-purple">CNTT & CĐS</span></td>
+                        <td>Sử dụng học liệu số, phần mềm dạy học</td>
+                        <td><input type="number" id="sa_digital" class="form-control" min="1" max="5" value="4" style="width:80px;" /></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">Đổi mới</span></td>
+                        <td>Sáng tạo, đổi mới phương pháp dạy học</td>
+                        <td><input type="number" id="sa_innovate" class="form-control" min="1" max="5" value="3" style="width:80px;" /></td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">Đổi mới</span></td>
+                        <td>Nghiên cứu khoa học sư phạm ứng dụng</td>
+                        <td><input type="number" id="sa_research" class="form-control" min="1" max="5" value="3" style="width:80px;" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:15px;"><i class="fas fa-save"></i> Lưu tự đánh giá</button>
+    </form>
+    <div style="margin-top:15px;">
+        <strong>Điểm trung bình:</strong> <span id="avg-score">0</span>
+        <br />
+        <canvas id="jobRadar" style="max-height:250px; margin-top:10px;"></canvas>
+    </div>
+</div>

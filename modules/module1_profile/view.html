@@ -1,0 +1,71 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-user-tie"></i> Hồ sơ cá nhân</h2>
+    </div>
+    <form id="profile-form">
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Họ và tên</label>
+                <input type="text" id="fullname" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label>Ngày sinh</label>
+                <input type="date" id="dob" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Số CCCD</label>
+                <input type="text" id="cccd" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Mã viên chức</label>
+                <input type="text" id="vc_code" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Trường công tác</label>
+                <input type="text" id="school" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Tổ chuyên môn</label>
+                <input type="text" id="department" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Chức vụ</label>
+                <input type="text" id="position" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Môn giảng dạy</label>
+                <input type="text" id="subject" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Trình độ</label>
+                <select id="degree" class="form-control">
+                    <option value="Cao đẳng">Cao đẳng</option>
+                    <option value="Đại học" selected>Đại học</option>
+                    <option value="Thạc sĩ">Thạc sĩ</option>
+                    <option value="Tiến sĩ">Tiến sĩ</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Chuyên ngành</label>
+                <input type="text" id="major" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Điện thoại</label>
+                <input type="tel" id="phone" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Avatar (URL hoặc Base64)</label>
+            <input type="text" id="avatar" class="form-control" placeholder="https://example.com/avatar.jpg" />
+        </div>
+        <div class="form-group">
+            <label>QR Code hồ sơ (URL)</label>
+            <input type="text" id="qr" class="form-control" placeholder="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=..." />
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu hồ sơ</button>
+    </form>
+</div>

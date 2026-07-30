@@ -1,0 +1,40 @@
+<div class="fade-in">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-chart-pie"></i> Tổng quan hồ sơ năng lực số</h2>
+        <button class="btn btn-outline" onclick="location.hash='#export'"><i class="fas fa-print"></i> Xuất báo cáo</button>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:24px;">
+        <div class="kpi-card" style="background: linear-gradient(135deg, var(--m365-blue), #2b88d8);">
+            <div class="kpi-value" id="kpi-profile">85%</div>
+            <div class="kpi-label">Hoàn thiện hồ sơ</div>
+            <i class="fas fa-tasks"></i>
+        </div>
+        <div class="kpi-card" style="background: linear-gradient(135deg, var(--success), #179b53);">
+            <div class="kpi-value" id="kpi-evidence">0</div>
+            <div class="kpi-label">Minh chứng</div>
+            <i class="fas fa-file-excel"></i>
+        </div>
+        <div class="kpi-card" style="background: linear-gradient(135deg, var(--purple), #7942b8);">
+            <div class="kpi-value" id="kpi-ai">0</div>
+            <div class="kpi-label">Prompt AI</div>
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="kpi-card" style="background: linear-gradient(135deg, var(--warning), #ea5c25);">
+            <div class="kpi-value" id="kpi-competition">0</div>
+            <div class="kpi-label">Thành tích</div>
+            <i class="fas fa-medal"></i>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3 style="margin-bottom:15px; color: var(--text-secondary);">Đánh giá năng lực</h3>
+            <canvas id="dashboardRadar" style="max-height:280px;"></canvas>
+        </div>
+        <div class="card">
+            <h3 style="margin-bottom:15px; color: var(--text-secondary);">Phân loại minh chứng</h3>
+            <canvas id="dashboardBar" style="max-height:280px;"></canvas>
+        </div>
+    </div>
+</div>

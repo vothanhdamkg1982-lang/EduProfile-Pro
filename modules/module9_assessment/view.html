@@ -1,0 +1,41 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-chart-bar"></i> Đánh giá năng lực theo NĐ 232</h2>
+    </div>
+    <form id="assessment-form">
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Năng lực chuyên môn (1-10)</label>
+                <input type="number" id="a_expertise" class="form-control" min="1" max="10" value="8" />
+            </div>
+            <div class="form-group">
+                <label>CNTT (1-10)</label>
+                <input type="number" id="a_ict" class="form-control" min="1" max="10" value="7" />
+            </div>
+            <div class="form-group">
+                <label>Chuyển đổi số (1-10)</label>
+                <input type="number" id="a_digital" class="form-control" min="1" max="10" value="6" />
+            </div>
+            <div class="form-group">
+                <label>AI trong dạy học (1-10)</label>
+                <input type="number" id="a_ai" class="form-control" min="1" max="10" value="7" />
+            </div>
+            <div class="form-group">
+                <label>Đổi mới sáng tạo (1-10)</label>
+                <input type="number" id="a_innovate" class="form-control" min="1" max="10" value="8" />
+            </div>
+            <div class="form-group">
+                <label>Nghiên cứu khoa học (1-10)</label>
+                <input type="number" id="a_research" class="form-control" min="1" max="10" value="6" />
+            </div>
+            <div class="form-group">
+                <label>Phẩm chất nghề nghiệp (1-10)</label>
+                <input type="number" id="a_ethics" class="form-control" min="1" max="10" value="9" />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu đánh giá</button>
+    </form>
+    <div style="margin-top:20px;">
+        <canvas id="assessmentRadar" style="max-height:300px;"></canvas>
+    </div>
+</div>

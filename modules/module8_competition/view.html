@@ -1,0 +1,35 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-medal"></i> Thi đua - Khen thưởng</h2>
+        <button class="btn btn-primary" id="btn-add-competition"><i class="fas fa-plus"></i> Thêm thành tích</button>
+    </div>
+    <div id="competition-form-container" style="display:none; background: var(--bg-color); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <form id="competition-form">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Loại danh hiệu</label>
+                    <select id="c_type" class="form-control">
+                        <option value="CSTĐ">CSTĐ</option>
+                        <option value="Lao động tiên tiến">Lao động tiên tiến</option>
+                        <option value="Bằng khen">Bằng khen</option>
+                        <option value="Giấy khen">Giấy khen</option>
+                        <option value="Danh hiệu">Danh hiệu</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Năm học</label>
+                    <input type="text" id="c_year" class="form-control" placeholder="2025-2026" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Mô tả</label>
+                <textarea id="c_desc" class="form-control" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu thành tích</button>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('competition-form-container').style.display='none'">Hủy</button>
+        </form>
+    </div>
+    <div id="competition-list">
+        <!-- Danh sách -->
+    </div>
+</div>

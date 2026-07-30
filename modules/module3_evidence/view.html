@@ -1,0 +1,45 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-file-alt"></i> Minh chứng năng lực</h2>
+        <button class="btn btn-primary" id="btn-add-evidence"><i class="fas fa-plus"></i> Thêm mới</button>
+    </div>
+    <div id="evidence-form-container" style="display:none; background: var(--bg-color); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <form id="evidence-form">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Tiêu đề</label>
+                    <input type="text" id="ev_title" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Loại minh chứng</label>
+                    <select id="ev_category" class="form-control">
+                        <option value="Kế hoạch bài dạy">Kế hoạch bài dạy</option>
+                        <option value="Giáo án">Giáo án</option>
+                        <option value="PPCT">PPCT</option>
+                        <option value="Đề kiểm tra">Đề kiểm tra</option>
+                        <option value="Ma trận">Ma trận</option>
+                        <option value="Ngân hàng câu hỏi">Ngân hàng câu hỏi</option>
+                        <option value="Video dạy học">Video dạy học</option>
+                        <option value="PowerPoint">PowerPoint</option>
+                        <option value="Bài giảng điện tử">Bài giảng điện tử</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Mô tả</label>
+                <textarea id="ev_desc" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label>File đính kèm (chọn file)</label>
+                <input type="file" id="ev_file" class="form-control" />
+                <small>Hỗ trợ PDF, Word, PowerPoint, Excel, Video, Ảnh</small>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu minh chứng</button>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('evidence-form-container').style.display='none'">Hủy</button>
+        </form>
+    </div>
+    <div id="evidence-list">
+        <!-- Danh sách minh chứng sẽ được render bằng JS -->
+    </div>
+</div>

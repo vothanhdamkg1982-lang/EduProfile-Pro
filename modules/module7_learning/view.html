@@ -1,0 +1,41 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-book-open"></i> Học liệu số</h2>
+        <button class="btn btn-primary" id="btn-add-learning"><i class="fas fa-plus"></i> Thêm học liệu</button>
+    </div>
+    <div id="learning-form-container" style="display:none; background: var(--bg-color); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <form id="learning-form">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Tên học liệu</label>
+                    <input type="text" id="l_title" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Loại</label>
+                    <select id="l_category" class="form-control">
+                        <option value="PowerPoint">PowerPoint</option>
+                        <option value="Video">Video</option>
+                        <option value="H5P">H5P</option>
+                        <option value="Canva">Canva</option>
+                        <option value="Wordwall">Wordwall</option>
+                        <option value="Quizizz">Quizizz</option>
+                        <option value="Kahoot">Kahoot</option>
+                        <option value="Scratch">Scratch</option>
+                        <option value="HTML">HTML</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Link hoặc file đính kèm</label>
+                <input type="text" id="l_link" class="form-control" placeholder="https://..." />
+                <small>Hoặc tải file lên</small>
+                <input type="file" id="l_file" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu học liệu</button>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('learning-form-container').style.display='none'">Hủy</button>
+        </form>
+    </div>
+    <div id="learning-list" class="grid-3">
+        <!-- Danh sách học liệu -->
+    </div>
+</div>

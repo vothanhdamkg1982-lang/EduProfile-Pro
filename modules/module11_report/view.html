@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-print"></i> Báo cáo tổng hợp</h2>
+        <div>
+            <button class="btn btn-primary" id="export-pdf"><i class="fas fa-file-pdf"></i> Xuất PDF</button>
+            <button class="btn btn-success" id="export-excel"><i class="fas fa-file-excel"></i> Xuất Excel</button>
+            <button class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i> In</button>
+        </div>
+    </div>
+    <div id="report-content">
+        <p>Nội dung báo cáo sẽ được tổng hợp từ tất cả các module.</p>
+        <p>Dữ liệu mẫu:</p>
+        <ul>
+            <li>Tổng số minh chứng: <span id="r-evidence">0</span></li>
+            <li>Tổng số Prompt AI: <span id="r-ai">0</span></li>
+            <li>Tổng số thành tích: <span id="r-competition">0</span></li>
+        </ul>
+    </div>
+</div>

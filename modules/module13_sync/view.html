@@ -1,0 +1,15 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-cloud-upload-alt"></i> Đồng bộ dữ liệu</h2>
+    </div>
+    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+        <button class="btn btn-primary" id="export-json"><i class="fas fa-download"></i> Xuất JSON</button>
+        <button class="btn btn-success" id="import-json"><i class="fas fa-upload"></i> Nhập JSON</button>
+        <button class="btn btn-outline" id="backup-restore"><i class="fas fa-archive"></i> Backup/Restore</button>
+    </div>
+    <div style="margin-top:20px;">
+        <input type="file" id="json-file" accept=".json" style="display:none;" />
+        <textarea id="json-data" class="form-control" rows="10" placeholder="Dán dữ liệu JSON ở đây để import"></textarea>
+        <button class="btn btn-primary" id="import-text" style="margin-top:10px;"><i class="fas fa-upload"></i> Import từ text</button>
+    </div>
+</div>

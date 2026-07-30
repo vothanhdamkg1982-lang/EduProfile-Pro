@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hồ Sơ Năng Lực CĐS Giáo Viên - M365 Edu</title>
+
+    <!-- CDN Libraries (hoạt động cả offline sau khi cache) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass">
+            <div class="brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduProfile Pro</span>
+            </div>
+            <ul class="nav-links" id="main-nav">
+                <li><a href="#dashboard" class="active"><i class="fas fa-chart-pie"></i> Tổng quan</a></li>
+                <li><a href="#profile"><i class="fas fa-user-tie"></i> 1. Hồ sơ cá nhân</a></li>
+                <li><a href="#job"><i class="fas fa-briefcase"></i> 2. Vị trí việc làm</a></li>
+                <li><a href="#evidence"><i class="fas fa-file-alt"></i> 3. Minh chứng năng lực</a></li>
+                <li><a href="#digital"><i class="fas fa-laptop-code"></i> 4. Chuyển đổi số</a></li>
+                <li><a href="#ai"><i class="fas fa-robot"></i> 5. Hồ sơ AI</a></li>
+                <li><a href="#gallery"><i class="fas fa-images"></i> 6. Gallery minh chứng</a></li>
+                <li><a href="#learning"><i class="fas fa-book-open"></i> 7. Học liệu số</a></li>
+                <li><a href="#competition"><i class="fas fa-medal"></i> 8. Thi đua</a></li>
+                <li><a href="#assessment"><i class="fas fa-chart-bar"></i> 9. Đánh giá năng lực</a></li>
+                <li><a href="#report"><i class="fas fa-print"></i> 10. Báo cáo</a></li>
+                <li><a href="#export"><i class="fas fa-file-pdf"></i> 11. Xuất hồ sơ</a></li>
+                <li><a href="#sync"><i class="fas fa-cloud-upload-alt"></i> 12. Đồng bộ</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-wrapper">
+            <header class="top-nav glass">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="global-search" placeholder="AI Search: tìm kiếm minh chứng, giáo án, prompt..." />
+                </div>
+                <div class="user-actions">
+                    <button id="theme-toggle" class="btn-icon" title="Sáng/Tối"><i class="fas fa-moon"></i></button>
+                    <button id="btn-sync" class="btn-icon" title="Đồng bộ đám mây"><i class="fas fa-cloud-upload-alt"></i></button>
+                    <button id="btn-settings" class="btn-icon" title="Cài đặt"><i class="fas fa-cog"></i></button>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=G+V&background=0078D4&color=fff" id="nav-avatar" alt="Avatar" />
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Module Container -->
+            <div id="module-container" class="module-container"></div>
+        </main>
+    </div>
+
+    <!-- Main Scripts (Module) -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

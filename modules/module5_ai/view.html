@@ -1,0 +1,40 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-robot"></i> Hồ sơ AI - Prompt Library</h2>
+        <button class="btn btn-primary" id="btn-add-prompt"><i class="fas fa-plus"></i> Thêm Prompt</button>
+    </div>
+    <div id="ai-form-container" style="display:none; background: var(--bg-color); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <form id="ai-form">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Tiêu đề</label>
+                    <input type="text" id="ai_title" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Phân loại</label>
+                    <select id="ai_category" class="form-control">
+                        <option value="Giáo án">Giáo án</option>
+                        <option value="Trắc nghiệm">Trắc nghiệm</option>
+                        <option value="PowerPoint">PowerPoint</option>
+                        <option value="Video">Video</option>
+                        <option value="Hình ảnh">Hình ảnh</option>
+                        <option value="Website">Website</option>
+                        <option value="Game">Game</option>
+                        <option value="Rubric">Rubric</option>
+                        <option value="Đánh giá">Đánh giá</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nội dung Prompt</label>
+                <textarea id="ai_content" class="form-control" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu Prompt</button>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('ai-form-container').style.display='none'">Hủy</button>
+        </form>
+    </div>
+    <div id="ai-list" class="grid-3">
+        <!-- Danh sách prompt -->
+    </div>
+</div>
