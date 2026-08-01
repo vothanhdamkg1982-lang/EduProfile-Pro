@@ -1,15 +1,35 @@
 <div class="card">
     <div class="card-header">
-        <h2 class="card-title"><i class="fas fa-cloud-upload-alt"></i> Đồng bộ dữ liệu</h2>
+        <h2 class="card-title"><i class="fas fa-cloud-upload-alt"></i> Đồng bộ dữ liệu đám mây (Firebase Firestore)</h2>
     </div>
-    <div style="display:flex; gap:20px; flex-wrap:wrap;">
-        <button class="btn btn-primary" id="export-json"><i class="fas fa-download"></i> Xuất JSON</button>
-        <button class="btn btn-success" id="import-json"><i class="fas fa-upload"></i> Nhập JSON</button>
-        <button class="btn btn-outline" id="backup-restore"><i class="fas fa-archive"></i> Backup/Restore</button>
+    
+    <!-- Phần trạng thái tài khoản & Đăng nhập -->
+    <div style="background: var(--bg-color); padding: 16px; border-radius: var(--radius); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img id="sync-user-avatar" src="https://ui-avatars.com/api/?name=Guest&background=0078D4&color=fff" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" alt="Avatar" />
+            <div>
+                <h4 id="sync-user-name" style="margin-bottom: 4px;">Chưa đăng nhập</h4>
+                <p id="sync-user-status" style="font-size: 0.85rem; color: var(--text-secondary);">Đăng nhập để đồng bộ dữ liệu cá nhân lên Firestore.</p>
+            </div>
+        </div>
+        <div>
+            <button id="btn-firebase-login" class="btn btn-primary">
+                <i class="fab fa-google"></i> Đăng nhập Google
+            </button>
+            <button id="btn-firebase-logout" class="btn btn-danger" style="display: none;">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </button>
+        </div>
     </div>
-    <div style="margin-top:20px;">
-        <input type="file" id="json-file" accept=".json" style="display:none;" />
-        <textarea id="json-data" class="form-control" rows="10" placeholder="Dán dữ liệu JSON ở đây để import"></textarea>
-        <button class="btn btn-primary" id="import-text" style="margin-top:10px;"><i class="fas fa-upload"></i> Import từ text</button>
+
+    <!-- Các tính năng Import/Export cũ -->
+    <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+        <button id="btn-export-json" class="btn btn-primary"><i class="fas fa-download"></i> Xuất JSON</button>
+        <button id="btn-import-json" class="btn btn-success"><i class="fas fa-upload"></i> Nhập JSON</button>
+    </div>
+
+    <div class="form-group">
+        <label>Dữ liệu JSON (Backup / Restore)</label>
+        <textarea id="json-data-input" class="form-control" placeholder="Dán dữ liệu JSON ở đây để import..." style="height: 150px;"></textarea>
     </div>
 </div>

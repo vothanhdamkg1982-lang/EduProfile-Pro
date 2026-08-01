@@ -1,11 +1,11 @@
-// app.js - Router và điều phối toàn cục
+// app.js - Router, điều phối toàn cục & Xác thực Firebase
 import { Database } from './db.js';
+import { auth, googleProvider, signInWithPopup, signOut } from './firebase-init.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Khởi tạo database toàn cục
 window.db = new Database();
 await window.db.init();
 
-// Danh sách module
 const MODULES = {
     'dashboard': { num: 10, name: 'dashboard' },
     'profile': { num: 1, name: 'profile' },
@@ -22,12 +22,10 @@ const MODULES = {
     'sync': { num: 13, name: 'sync' }
 };
 
-// Hàm load module
 async function loadModule(hash) {
     const moduleName = hash || 'dashboard';
     const container = document.getElementById('module-container');
 
-    // Cập nhật active nav
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
     const activeLink = document.querySelector(`.nav-links a[href="#${moduleName}"]`);
     if (activeLink) activeLink.classList.add('active');
@@ -57,7 +55,6 @@ async function loadModule(hash) {
     }
 }
 
-// --- TÌM KIẾM TOÀN CỤC (AI Search) ---
 async function globalSearch(query) {
     if (!query || query.length < 2) return [];
     const stores = ['evidences', 'ai_prompts', 'learning_materials', 'competitions', 'profile'];
@@ -65,7 +62,6 @@ async function globalSearch(query) {
     for (const store of stores) {
         const items = await window.db.getAll(store);
         const matched = items.filter(item => {
-            // Tìm trong các trường văn bản
             const str = JSON.stringify(item).toLowerCase();
             return str.includes(query.toLowerCase());
         });
@@ -74,14 +70,11 @@ async function globalSearch(query) {
     return results;
 }
 
-// Hiển thị kết quả tìm kiếm dưới dạng dropdown (modal)
 function showSearchResults(results) {
-    const container = document.getElementById('module-container');
     if (results.length === 0) {
         alert('Không tìm thấy kết quả nào.');
         return;
     }
-    // Tạo modal đơn giản
     const modal = document.createElement('div');
     modal.style.cssText = `
         position: fixed; top: 80px; right: 20px; max-width: 500px; max-height: 70vh;
@@ -102,7 +95,6 @@ function showSearchResults(results) {
         `).join('')}
     `;
     document.body.appendChild(modal);
-    // Tự động xóa khi click bên ngoài
     setTimeout(() => {
         document.addEventListener('click', function handler(e) {
             if (!modal.contains(e.target) && e.target.id !== 'global-search') {
@@ -113,9 +105,7 @@ function showSearchResults(results) {
     }, 100);
 }
 
-// Khởi tạo giao diện chung
 function initUI() {
-    // Theme toggle
     const themeBtn = document.getElementById('theme-toggle');
     const currentTheme = localStorage.getItem('edTheme') || 'light';
     document.documentElement.setAttribute('data-theme', currentTheme);
@@ -128,12 +118,10 @@ function initUI() {
         themeBtn.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
     });
 
-    // Nút đồng bộ
     document.getElementById('btn-sync').addEventListener('click', () => {
-        alert('Đang đồng bộ dữ liệu lên đám mây (demo)');
+        alert('Dữ liệu đã được liên kết trực tiếp và đồng bộ tự động với Cloud Firestore!');
     });
 
-    // Tìm kiếm toàn cục
     const searchInput = document.getElementById('global-search');
     let timeoutId = null;
     searchInput.addEventListener('input', async (e) => {
@@ -146,24 +134,60 @@ function initUI() {
         }, 400);
     });
 
-    // Load avatar từ profile
-    window.db.get('profile', 1).then(profile => {
-        if (profile && profile.avatar) {
-            document.getElementById('nav-avatar').src = profile.avatar;
-        } else if (profile && profile.fullname) {
-            const name = encodeURIComponent(profile.fullname);
-            document.getElementById('nav-avatar').src = `https://ui-avatars.com/api/?name=${name}&background=0078D4&color=fff`;
+    // Xử lý sự kiện đăng nhập / đăng xuất Google
+    const loginBtn = document.getElementById('btn-google-login');
+    const logoutBtn = document.getElementById('btn-google-logout');
+
+    loginBtn.addEventListener('click', async () => {
+        try {
+            await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+            console.error("Lỗi đăng nhập:", error);
+            alert("Đăng nhập thất bại.");
         }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            location.reload();
+        } catch (error) {
+            console.error("Lỗi đăng xuất:", error);
+        }
+    });
+
+    // Theo dõi trạng thái đăng nhập Firebase
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+            if (user.photoURL) {
+                document.getElementById('nav-avatar').src = user.photoURL;
+            }
+        } else {
+            loginBtn.style.display = 'inline-block';
+            logoutBtn.style.display = 'none';
+        }
+
+        // Load avatar từ profile hoặc user
+        window.db.get('profile', 1).then(profile => {
+            if (profile && profile.avatar) {
+                document.getElementById('nav-avatar').src = profile.avatar;
+            } else if (user && user.photoURL) {
+                document.getElementById('nav-avatar').src = user.photoURL;
+            } else if (profile && profile.fullname) {
+                const name = encodeURIComponent(profile.fullname);
+                document.getElementById('nav-avatar').src = `https://ui-avatars.com/api/?name=${name}&background=0078D4&color=fff`;
+            }
+        });
     });
 }
 
-// Router
 window.addEventListener('hashchange', () => {
     const hash = window.location.hash.substring(1);
     loadModule(hash);
 });
 
-// Khởi động
 initUI();
 if (!window.location.hash) {
     window.location.hash = '#dashboard';

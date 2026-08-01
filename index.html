@@ -5,20 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hồ Sơ Năng Lực CĐS Giáo Viên - M365 Edu</title>
 
-    <!-- CDN Libraries (hoạt động cả offline sau khi cache) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- Global Styles -->
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
     <div class="app-container">
-        <!-- Sidebar Navigation -->
         <aside class="sidebar glass">
             <div class="brand">
                 <i class="fas fa-graduation-cap"></i>
@@ -41,7 +38,6 @@
             </ul>
         </aside>
 
-        <!-- Main Content Area -->
         <main class="main-wrapper">
             <header class="top-nav glass">
                 <div class="search-bar">
@@ -49,6 +45,12 @@
                     <input type="text" id="global-search" placeholder="AI Search: tìm kiếm minh chứng, giáo án, prompt..." />
                 </div>
                 <div class="user-actions">
+                    <button id="btn-google-login" class="btn btn-primary" style="font-size: 0.85rem; padding: 6px 12px; display: none;">
+                        <i class="fab fa-google"></i> Đăng nhập
+                    </button>
+                    <button id="btn-google-logout" class="btn btn-outline" style="font-size: 0.85rem; padding: 6px 12px; display: none;">
+                        Đăng xuất
+                    </button>
                     <button id="theme-toggle" class="btn-icon" title="Sáng/Tối"><i class="fas fa-moon"></i></button>
                     <button id="btn-sync" class="btn-icon" title="Đồng bộ đám mây"><i class="fas fa-cloud-upload-alt"></i></button>
                     <button id="btn-settings" class="btn-icon" title="Cài đặt"><i class="fas fa-cog"></i></button>
@@ -58,12 +60,10 @@
                 </div>
             </header>
 
-            <!-- Dynamic Module Container -->
             <div id="module-container" class="module-container"></div>
         </main>
     </div>
 
-    <!-- Main Scripts (Module) -->
     <script type="module" src="app.js"></script>
 </body>
 </html>

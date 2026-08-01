@@ -1,112 +1,68 @@
-// db.js - IndexedDB wrapper
+// db.js - Firestore wrapper thay thế IndexedDB
+import { db, auth } from './firebase-init.js';
+import { doc, setDoc, getDoc, getDocs, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 export class Database {
     constructor() {
-        this.db = null;
-        this.DB_NAME = 'HoSoNangLucDB';
-        this.DB_VERSION = 1;
+        this.db = db;
     }
 
-    init() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                // Tạo các object store cho từng module
-                const stores = [
-                    'profile',          // module1
-                    'job_assessment',   // module2
-                    'evidences',        // module3
-                    'digital_skills',   // module4
-                    'ai_prompts',       // module5
-                    'gallery',          // module6
-                    'learning_materials', // module7
-                    'competitions',     // module8
-                    'assessment_results', // module9
-                    'reports',          // module11
-                    'sync_data'         // module13
-                ];
-                stores.forEach(name => {
-                    if (!db.objectStoreNames.contains(name)) {
-                        const store = db.createObjectStore(name, { keyPath: 'id', autoIncrement: true });
-                        // Tạo index cho tìm kiếm
-                        if (name === 'evidences' || name === 'gallery' || name === 'learning_materials') {
-                            store.createIndex('title', 'title', { unique: false });
-                            store.createIndex('category', 'category', { unique: false });
-                        }
-                        if (name === 'ai_prompts') {
-                            store.createIndex('category', 'category', { unique: false });
-                            store.createIndex('title', 'title', { unique: false });
-                        }
-                        if (name === 'competitions') {
-                            store.createIndex('year', 'year', { unique: false });
-                        }
-                    }
-                });
-            };
-
-            request.onsuccess = (event) => {
-                this.db = event.target.result;
-                resolve(this.db);
-            };
-
-            request.onerror = (event) => {
-                reject(event.target.error);
-            };
-        });
+    async init() {
+        return true;
     }
 
-    // Generic CRUD
-    save(storeName, data) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readwrite');
-            const store = tx.objectStore(storeName);
-            const req = store.put(data);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
+    _getUserId() {
+        return auth.currentUser ? auth.currentUser.uid : 'default_user';
     }
 
-    get(storeName, id) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const req = store.get(id);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
+    async save(storeName, data) {
+        try {
+            const userId = this._getUserId();
+            const docId = data.id ? data.id.toString() : Date.now().toString();
+            const docRef = doc(this.db, 'users', userId, storeName, docId);
+            await setDoc(docRef, { ...data, id: docId, updatedAt: new Date().toISOString() });
+            return docId;
+        } catch (error) {
+            console.error("Lỗi khi lưu Firestore:", error);
+            throw error;
+        }
     }
 
-    getAll(storeName) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const req = store.getAll();
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
+    async get(storeName, id) {
+        try {
+            const userId = this._getUserId();
+            const docRef = doc(this.db, 'users', userId, storeName, id.toString());
+            const docSnap = await getDoc(docRef);
+            return docSnap.exists() ? docSnap.data() : null;
+        } catch (error) {
+            console.error("Lỗi khi đọc Firestore:", error);
+            return null;
+        }
     }
 
-    delete(storeName, id) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readwrite');
-            const store = tx.objectStore(storeName);
-            const req = store.delete(id);
-            req.onsuccess = () => resolve();
-            req.onerror = () => reject(req.error);
-        });
+    async getAll(storeName) {
+        try {
+            const userId = this._getUserId();
+            const querySnapshot = await getDocs(collection(this.db, 'users', userId, storeName));
+            const results = [];
+            querySnapshot.forEach((doc) => {
+                results.push(doc.data());
+            });
+            return results;
+        } catch (error) {
+            console.error("Lỗi khi lấy danh sách từ Firestore:", error);
+            return [];
+        }
     }
 
-    // Tìm kiếm theo index (ví dụ: tìm theo title)
-    search(storeName, indexName, query) {
-        return new Promise((resolve, reject) => {
-            const tx = this.db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const index = store.index(indexName);
-            const range = IDBKeyRange.bound(query, query + '\uffff');
-            const req = index.getAll(range);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
+    async delete(storeName, id) {
+        try {
+            const userId = this._getUserId();
+            const docRef = doc(this.db, 'users', userId, storeName, id.toString());
+            await deleteDoc(docRef);
+        } catch (error) {
+            console.error("Lỗi khi xóa trên Firestore:", error);
+            throw error;
+        }
     }
 }
