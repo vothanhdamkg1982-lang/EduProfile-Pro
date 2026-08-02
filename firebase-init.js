@@ -7,6 +7,7 @@ import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc } fro
 const firebaseConfig = {
   apiKey: "AIzaSyDZrlUaKNYhOPE_8yFiZzXhSw0uqR3tQfs",
   authDomain: "ho-so-nang-luc-so.firebaseapp.com",
+  databaseURL: "https://ho-so-nang-luc-so-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "ho-so-nang-luc-so",
   storageBucket: "ho-so-nang-luc-so.firebasestorage.app",
   messagingSenderId: "455775597999",
