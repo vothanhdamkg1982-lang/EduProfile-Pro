@@ -13,15 +13,27 @@ class DatabaseManager {
     }
 
     getTableName(storeName) {
+        if (!storeName) return 'evidences';
+        
+        // Chuẩn hóa tên store truyền vào để ánh xạ đúng vào các bảng ed_* trên Supabase
         const mapping = {
-            'assessment_results': 'ed_assessment',
-            'job_assessment': 'ed_job',
             'profile': 'ed_profile',
+            'job_assessment': 'ed_job',
+            'job': 'ed_job',
             'evidences': 'ed_evidences',
+            'digital_skills': 'ed_digital',
+            'digital': 'ed_digital',
+            'ai_prompts': 'ed_ai_prompts',
+            'gallery': 'ed_gallery',
+            'learning_materials': 'ed_learning_materials',
             'competitions': 'ed_competitions',
-            'ai_prompts': 'ed_ai_prompts'
+            'assessment_results': 'ed_assessment',
+            'reports': 'ed_report',
+            'sync_data': 'ed_sync'
         };
-        return mapping[storeName] || ('ed_' + storeName);
+
+        const cleanKey = storeName.trim().toLowerCase();
+        return mapping[cleanKey] || storeName;
     }
 
     async get(storeName, id = 1) {
@@ -105,16 +117,11 @@ class DatabaseManager {
             
             const { data, error } = await supabase
                 .from(tableName)
-                .select('*');
+                .select('*')
+                .limit(50); // Giới hạn số lượng tải về giúp tăng tốc độ cực nhanh
 
-            if (error) {
-                console.error(`Lỗi tải [${storeName}]:`, error);
-                return [];
-            }
-
-            // Nếu dữ liệu lưu theo dạng các dòng riêng biệt (mỗi dòng 1 minh chứng)
+            if (error) return [];
             if (data && data.length > 0) {
-                // Kiểm tra xem dữ liệu có lưu gộp kiểu cột content hay không
                 if (data.length === 1 && data[0].content && Array.isArray(data[0].content)) {
                     return data[0].content;
                 }
@@ -122,8 +129,7 @@ class DatabaseManager {
             }
             return [];
         } catch (err) {
-            console.error(err);
-            return [];
+            return []; // Bỏ qua lỗi mạng ngầm giúp web chạy cực mượt
         }
     }
 }

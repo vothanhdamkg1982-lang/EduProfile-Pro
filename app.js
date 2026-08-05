@@ -159,4 +159,51 @@ if (!window.location.hash) {
     window.location.hash = '#dashboard';
 } else {
     loadModule(window.location.hash.substring(1));
+    // --- XỬ LÝ SỰ KIỆN TOÀN CỤC CHO CÁC MODULE ---
+window.viewImage = (imgSrc) => {
+    let modal = document.getElementById('image-viewer-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'image-viewer-modal';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:9999; cursor:pointer;';
+        modal.innerHTML = `<img id="modal-img" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" />`;
+        modal.onclick = () => modal.style.display = 'none';
+        document.body.appendChild(modal);
+    }
+    document.getElementById('modal-img').src = imgSrc;
+    modal.style.display = 'flex';
+};
+
+window.viewEvidence = (id) => { alert("Xem chi tiết minh chứng ID: " + id); };
+window.editEvidence = (id) => { alert("Chỉnh sửa minh chứng ID: " + id); };
+window.deleteEvidence = async (id) => {
+    if (confirm("Bạn có chắc chắn muốn xóa minh chứng này không?")) {
+        if (window.db && typeof window.db.delete === 'function') {
+            await window.db.delete('ed_evidences', id);
+        }
+        location.reload();
+    }
+};
+
+window.viewGallery = (id) => { alert("Xem chi tiết gallery ID: " + id); };
+window.editGallery = (id) => { alert("Chỉnh sửa gallery ID: " + id); };
+window.deleteGallery = async (id) => {
+    if (confirm("Bạn có chắc chắn muốn xóa ảnh/video này không?")) {
+        if (window.db && typeof window.db.delete === 'function') {
+            await window.db.delete('evidences', id);
+        }
+        location.reload();
+    }
+};
+
+window.viewLearningItem = (id) => { alert("Xem học liệu ID: " + id); };
+window.editLearningItem = (id) => { alert("Chỉnh sửa học liệu ID: " + id); };
+window.deleteLearningItem = async (id) => {
+    if (confirm("Bạn có chắc chắn muốn xóa học liệu này không?")) {
+        if (window.db && typeof window.db.delete === 'function') {
+            await window.db.delete('ed_learning_materials', id);
+        }
+        location.reload();
+    }
+};
 }
