@@ -1,62 +1,64 @@
-// modules/module13_sync/controller.js
-import { auth, googleProvider, signInWithPopup, signOut } from '../../firebase-init.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+// Thêm đoạn này vào bên trong hàm init() của module13_sync/controller.js
 
-export function init() {
-    const loginBtn = document.getElementById('btn-firebase-login');
-    const logoutBtn = document.getElementById('btn-firebase-logout');
-    const userNameEl = document.getElementById('sync-user-name');
-    const userStatusEl = document.getElementById('sync-user-status');
-    const userAvatarEl = document.getElementById('sync-user-avatar');
+    // 1. Xử lý nút Xuất file JSON
+    const btnExport = document.getElementById('btn-export-json');
+    if (btnExport) {
+        btnExport.onclick = async () => {
+            try {
+                const stores = ['profile', 'job_assessment', 'evidences', 'digital_skills', 'ai_prompts', 'gallery', 'learning_materials', 'competitions', 'assessment_results', 'reports', 'sync_data'];
+                const exportData = {};
+                
+                for (const store of stores) {
+                    if (window.db && typeof window.db.getAll === 'function') {
+                        exportData[store] = await window.db.getAll(store);
+                    }
+                }
 
-    // Xử lý sự kiện Đăng nhập
-    loginBtn?.addEventListener('click', async () => {
-        try {
-            await signInWithPopup(auth, googleProvider);
-            alert("Đăng nhập thành công!");
-        } catch (error) {
-            console.error("Lỗi đăng nhập:", error);
-            alert("Đăng nhập thất bại: " + error.message);
-        }
-    });
+                // Chuyển thành chuỗi JSON và tạo file để tải xuống tự động
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `hoso_backup_${Date.now()}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
 
-    // Xử lý sự kiện Đăng xuất
-    logoutBtn?.addEventListener('click', async () => {
-        try {
-            await signOut(auth);
-            alert("Đã đăng xuất!");
-        } catch (error) {
-            console.error("Lỗi đăng xuất:", error);
-        }
-    });
+                // Hiển thị thêm vào ô text nếu có
+                const jsonInput = document.getElementById('json-data-input');
+                if (jsonInput) jsonInput.value = JSON.stringify(exportData, null, 2);
 
-    // Lắng nghe trạng thái tài khoản Firebase Auth
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            userNameEl.textContent = user.displayName || user.email;
-            userStatusEl.textContent = `Đã kết nối Firestore (UID: ${user.uid.substring(0, 6)}...)`;
-            if (user.photoURL) {
-                userAvatarEl.src = user.photoURL;
+                alert("Xuất dữ liệu ra file JSON thành công!");
+            } catch (err) {
+                console.error("Lỗi xuất JSON:", err);
+                alert("Có lỗi khi xuất file!");
             }
-            loginBtn.style.display = 'none';
-            logoutBtn.style.display = 'inline-flex';
-        } else {
-            userNameEl.textContent = "Chưa đăng nhập";
-            userStatusEl.textContent = "Đăng nhập để lưu và đồng bộ dữ liệu lên Firebase.";
-            userAvatarEl.src = "https://ui-avatars.com/api/?name=Guest&background=0078D4&color=fff";
-            loginBtn.style.display = 'inline-flex';
-            logoutBtn.style.display = 'none';
-        }
-    });
+        };
+    }
 
-    // Xử lý nút Xuất JSON dự phòng cục bộ
-    document.getElementById('btn-export-json')?.addEventListener('click', async () => {
-        const stores = ['profile', 'job_assessment', 'evidences', 'digital_skills', 'ai_prompts', 'gallery', 'learning_materials', 'competitions', 'assessment_results', 'reports', 'sync_data'];
-        const exportData = {};
-        for (const store of stores) {
-            exportData[store] = await window.db.getAll(store);
-        }
-        document.getElementById('json-data-input').value = JSON.stringify(exportData, null, 2);
-        alert("Đã xuất toàn bộ dữ liệu ra ô bên dưới!");
-    });
-}
+    // 2. Xử lý nút Nhập file JSON
+    const btnImport = document.getElementById('btn-import-json');
+    if (btnImport) {
+        btnImport.onclick = async () => {
+            try {
+                const jsonInput = document.getElementById('json-data-input');
+                const rawText = jsonInput ? jsonInput.value.trim() : '';
+                if (!rawText) {
+                    alert('Vui lòng dán nội dung JSON hoặc chọn file để nhập!');
+                    return;
+                }
+
+                const importedData = JSON.parse(rawText);
+                for (const [storeName, dataValue] of Object.entries(importedData)) {
+                    if (window.db && typeof window.db.save === 'function') {
+                        await window.db.save(storeName, dataValue);
+                    }
+                }
+
+                alert('Nhập và đồng bộ dữ liệu thành công!');
+                location.reload();
+            } catch (err) {
+                console.error("Lỗi nhập JSON:", err);
+                alert('Dữ liệu JSON không hợp lệ!');
+            }
+        };
+    }

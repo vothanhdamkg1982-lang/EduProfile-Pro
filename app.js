@@ -1,7 +1,6 @@
-// app.js - Router, điều phối toàn cục & Xác thực Firebase
+// app.js - Router, điều phối toàn cục
 import { Database } from './db.js';
-import { auth, googleProvider, signInWithPopup, signOut } from './firebase-init.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { supabase } from './supabase-init.js';
 
 window.db = new Database();
 await window.db.init();
@@ -119,7 +118,7 @@ function initUI() {
     });
 
     document.getElementById('btn-sync').addEventListener('click', () => {
-        alert('Dữ liệu đã được liên kết trực tiếp và đồng bộ tự động với Cloud Firestore!');
+        alert('Dữ liệu đã được liên kết trực tiếp và đồng bộ tự động với Supabase Cloud!');
     });
 
     const searchInput = document.getElementById('global-search');
@@ -134,52 +133,19 @@ function initUI() {
         }, 400);
     });
 
-    // Xử lý sự kiện đăng nhập / đăng xuất Google
+    // Ẩn nút đăng nhập Google cũ nếu không dùng Firebase Auth nữa
     const loginBtn = document.getElementById('btn-google-login');
     const logoutBtn = document.getElementById('btn-google-logout');
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'none';
 
-    loginBtn.addEventListener('click', async () => {
-        try {
-            await signInWithPopup(auth, googleProvider);
-        } catch (error) {
-            console.error("Lỗi đăng nhập:", error);
-            alert("Đăng nhập thất bại.");
+    window.db.get('profile', 1).then(profile => {
+        if (profile && profile.avatar) {
+            document.getElementById('nav-avatar').src = profile.avatar;
+        } else if (profile && profile.fullname) {
+            const name = encodeURIComponent(profile.fullname);
+            document.getElementById('nav-avatar').src = `https://ui-avatars.com/api/?name=${name}&background=0078D4&color=fff`;
         }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-        try {
-            await signOut(auth);
-            location.reload();
-        } catch (error) {
-            console.error("Lỗi đăng xuất:", error);
-        }
-    });
-
-    // Theo dõi trạng thái đăng nhập Firebase
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            loginBtn.style.display = 'none';
-            logoutBtn.style.display = 'inline-block';
-            if (user.photoURL) {
-                document.getElementById('nav-avatar').src = user.photoURL;
-            }
-        } else {
-            loginBtn.style.display = 'inline-block';
-            logoutBtn.style.display = 'none';
-        }
-
-        // Load avatar từ profile hoặc user
-        window.db.get('profile', 1).then(profile => {
-            if (profile && profile.avatar) {
-                document.getElementById('nav-avatar').src = profile.avatar;
-            } else if (user && user.photoURL) {
-                document.getElementById('nav-avatar').src = user.photoURL;
-            } else if (profile && profile.fullname) {
-                const name = encodeURIComponent(profile.fullname);
-                document.getElementById('nav-avatar').src = `https://ui-avatars.com/api/?name=${name}&background=0078D4&color=fff`;
-            }
-        });
     });
 }
 
