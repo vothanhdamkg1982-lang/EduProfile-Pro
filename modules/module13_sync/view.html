@@ -1,35 +1,18 @@
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title"><i class="fas fa-cloud-upload-alt"></i> Đồng bộ dữ liệu đám mây (Firebase Firestore)</h2>
-    </div>
-    
-    <!-- Phần trạng thái tài khoản & Đăng nhập -->
-    <div style="background: var(--bg-color); padding: 16px; border-radius: var(--radius); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color);">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <img id="sync-user-avatar" src="https://ui-avatars.com/api/?name=Guest&background=0078D4&color=fff" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" alt="Avatar" />
-            <div>
-                <h4 id="sync-user-name" style="margin-bottom: 4px;">Chưa đăng nhập</h4>
-                <p id="sync-user-status" style="font-size: 0.85rem; color: var(--text-secondary);">Đăng nhập để đồng bộ dữ liệu cá nhân lên Firestore.</p>
-            </div>
-        </div>
-        <div>
-            <button id="btn-firebase-login" class="btn btn-primary">
-                <i class="fab fa-google"></i> Đăng nhập Google
-            </button>
-            <button id="btn-firebase-logout" class="btn btn-danger" style="display: none;">
-                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-            </button>
-        </div>
-    </div>
+<div class="card" style="padding: 24px;">
+    <h2><i class="fas fa-cloud-upload-alt"></i> Đồng bộ dữ liệu đám mây (Supabase)</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+        Quản lý tài khoản và đồng bộ an toàn dữ liệu cá nhân của bạn lên hệ thống đám mây Supabase.
+    </p>
 
-    <!-- Các tính năng Import/Export cũ -->
-    <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+    <!-- QUAN TRỌNG: Phải có khung này thì app.js mới vẽ được nút đăng nhập Google -->
+    <div id="user-auth-status"></div>
+
+    <hr style="margin: 24px 0; border: 0; border-top: 1px solid var(--border-color, #ddd);">
+
+    <h3>Sao lưu / Khôi phục thủ công (JSON)</h3>
+    <div style="margin-top: 12px; display: flex; gap: 10px; margin-bottom: 16px;">
         <button id="btn-export-json" class="btn btn-primary"><i class="fas fa-download"></i> Xuất JSON</button>
         <button id="btn-import-json" class="btn btn-success"><i class="fas fa-upload"></i> Nhập JSON</button>
     </div>
-
-    <div class="form-group">
-        <label>Dữ liệu JSON (Backup / Restore)</label>
-        <textarea id="json-data-input" class="form-control" placeholder="Dán dữ liệu JSON ở đây để import..." style="height: 150px;"></textarea>
-    </div>
+    <textarea id="json-input-area" placeholder="Dán dữ liệu JSON ở đây để import..." style="width: 100%; height: 120px; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color, #ddd); background: var(--bg-card, #fff); color: var(--text-main);"></textarea>
 </div>
