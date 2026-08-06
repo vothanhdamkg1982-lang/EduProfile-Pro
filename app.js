@@ -295,4 +295,44 @@ window.deleteLearningItem = async (id) => {
         }
         location.reload();
     }
+    // --- XỬ LÝ SỰ KIỆN TOÀN CỤC CHO CÁC MODULE ---
+window.viewImage = (imgSrc) => {
+    let modal = document.getElementById('image-viewer-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'image-viewer-modal';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:9999; cursor:pointer;';
+        modal.innerHTML = `<img id="modal-img" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" />`;
+        modal.onclick = () => modal.style.display = 'none';
+        document.body.appendChild(modal);
+    }
+    document.getElementById('modal-img').src = imgSrc;
+    modal.style.display = 'flex';
+};
+
+// Hàm xóa chung tổng quát hoạt động cho mọi module (Truyền đúng tên store và id)
+window.removeItem = async function(storeName, id, confirmMessage = "Bạn có chắc chắn muốn xóa mục này không?") {
+    if (confirm(confirmMessage)) {
+        if (window.db && typeof window.db.delete === 'function') {
+            const success = await window.db.delete(storeName, id);
+            if (success) {
+                alert("Xóa thành công!");
+                location.reload();
+            } else {
+                alert("Xóa thất bại, vui lòng kiểm tra lại kết nối cơ sở dữ liệu.");
+            }
+        } else {
+            alert("Lỗi: Phương thức xóa dữ liệu chưa sẵn sàng.");
+        }
+    }
+};
+
+// Cụ thể hóa các hàm xóa cho từng module để tương thích ngược tuyệt đối với code cũ
+window.deleteEvidence = (id) => window.removeItem('evidences', id, "Bạn có chắc chắn muốn xóa minh chứng này không?");
+window.deleteGallery = (id) => window.removeItem('gallery', id, "Bạn có chắc chắn muốn xóa ảnh/video này không?");
+window.deleteLearningItem = (id) => window.removeItem('learning_materials', id, "Bạn có chắc chắn muốn xóa học liệu này không?");
+
+// Bổ sung riêng cho Mục 5 (AI Prompts) và Mục 8 (Competitions)
+window.deleteAIPrompt = (id) => window.removeItem('ai_prompts', id, "Bạn có chắc chắn muốn xóa Prompt AI này không?");
+window.deleteCompetition = (id) => window.removeItem('competitions', id, "Bạn có chắc chắn muốn xóa mục thi đua này không?");
 };

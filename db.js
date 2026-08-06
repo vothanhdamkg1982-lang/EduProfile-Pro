@@ -132,6 +132,39 @@ class DatabaseManager {
             return []; // Bỏ qua lỗi mạng ngầm giúp web chạy cực mượt
         }
     }
+
+    // ==========================================
+    // BỔ SUNG HÀM DELETE AN TOÀN CHO MỤC 5 VÀ 8
+    // ==========================================
+    async delete(storeName, id) {
+        try {
+            const supabase = this.getSupabase();
+            if (!supabase) {
+                alert('Chưa kết nối được với Database!');
+                return false;
+            }
+
+            const tableName = this.getTableName(storeName);
+            const targetId = String(id);
+
+            // Thực hiện xóa dòng theo id trong bảng Supabase tương ứng
+            const { error } = await supabase
+                .from(tableName)
+                .delete()
+                .eq('id', targetId);
+
+            if (error) {
+                console.error(`Lỗi xóa [${storeName}] với ID [${targetId}]:`, error);
+                alert('Lỗi khi xóa dữ liệu: ' + error.message);
+                return false;
+            }
+
+            return true;
+        } catch (err) {
+            console.error('Lỗi khi gọi hàm xóa:', err);
+            return false;
+        }
+    }
 }
 
 const db = new DatabaseManager();
