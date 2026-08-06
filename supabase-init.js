@@ -1,3 +1,4 @@
+// supabase-init.js - Khởi tạo Supabase Client
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://ohmwphdeeldmlxuuknny.supabase.co';
@@ -7,7 +8,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: true // Quan trọng để bắt token trên URL trả về từ Google
+        detectSessionInUrl: true // Giúp bắt token trả về từ Google chính xác
     }
 });
 

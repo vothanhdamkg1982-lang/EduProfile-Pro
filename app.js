@@ -131,11 +131,7 @@ function initAuth() {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: { 
-                    redirectTo: 'https://vothanhdamkg1982-lang.github.io/EduProfile-Pro/',
-                    queryParams: {
-                        access_type: 'offline',
-                        prompt: 'consent',
-                    }
+                    redirectTo: 'https://vothanhdamkg1982-lang.github.io/EduProfile-Pro/' 
                 }
             });
             if (error) throw error;
