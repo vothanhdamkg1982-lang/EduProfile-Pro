@@ -48,7 +48,7 @@ async function loadModule(hash) {
             <div class="card">
                 <h2><i class="fas fa-exclamation-triangle"></i> Lỗi tải module</h2>
                 <p>${error.message}</p>
-                <p>Vui lòng kiểm tra lại cấu trúc thư mục.</p>
+                <p>Vui lòng kiểm tra lại cấu trúc thư mục module.</p>
             </div>
         `;
     }
@@ -68,9 +68,7 @@ async function globalSearch(query) {
                 });
                 results.push(...matched.map(item => ({ ...item, _store: store })));
             }
-        } catch (e) {
-            // Bỏ qua nếu store chưa khởi tạo
-        }
+        } catch (e) {}
     }
     return results;
 }
@@ -110,29 +108,22 @@ function showSearchResults(results) {
     }, 100);
 }
 
-// --- TÍCH HỢP XÁC THỰC THỰC TẾ SUPABASE AUTH ---
+// --- XÁC THỰC SUPABASE AUTH ---
 function initAuth() {
-    if (!supabase) {
-        console.error("Supabase client chưa được khởi tạo!");
-        return;
-    }
+    if (!supabase) return;
 
     async function checkUserSession() {
         try {
             const { data: { session } } = await supabase.auth.getSession();
             updateAuthUI(session ? session.user : null);
-        } catch (err) {
-            console.error("Lỗi lấy session:", err);
-        }
+        } catch (err) {}
     }
 
     window.loginWithGoogle = async () => {
         try {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
-                options: { 
-                    redirectTo: 'https://vothanhdamkg1982-lang.github.io/EduProfile-Pro/' 
-                }
+                options: { redirectTo: window.location.origin + window.location.pathname }
             });
             if (error) throw error;
         } catch (error) {
@@ -147,35 +138,33 @@ function initAuth() {
             updateAuthUI(null);
             alert("Đã đăng xuất thành công!");
             location.reload();
-        } catch (error) {
-            console.error("Lỗi đăng xuất:", error.message);
-        }
+        } catch (error) {}
     };
 
     function updateAuthUI(user) {
         const userStatusEl = document.getElementById('user-auth-status');
-        if (!userStatusEl) return;
-
-        if (user) {
-            userStatusEl.innerHTML = `
-                <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-card, #fff); padding:16px; border-radius:8px; border:1px solid var(--border-color,#ddd);">
-                    <div>
-                        <h4 style="margin:0; color:var(--text-main, #333);">Đã đăng nhập Google</h4>
-                        <p style="margin:4px 0 0 0; font-size:0.9rem; color:var(--text-secondary, #666);">${user.email}</p>
+        if (userStatusEl) {
+            if (user) {
+                userStatusEl.innerHTML = `
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card-bg, #fff); padding:16px; border-radius:8px; border:1px solid var(--border-color,#ddd);">
+                        <div>
+                            <h4 style="margin:0; color:var(--text-main, #333);">Đã đăng nhập Google</h4>
+                            <p style="margin:4px 0 0 0; font-size:0.9rem; color:var(--text-secondary, #666);">${user.email}</p>
+                        </div>
+                        <button onclick="logoutAccount()" style="background:#d9534f; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">Đăng xuất</button>
                     </div>
-                    <button onclick="logoutAccount()" style="background:#d9534f; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:500;">Đăng xuất</button>
-                </div>
-            `;
-        } else {
-            userStatusEl.innerHTML = `
-                <div style="background:var(--bg-card, #fff); padding:20px; border-radius:8px; border:1px solid var(--border-color,#ddd); text-align:center;">
-                    <h3 style="margin-top:0; color:var(--text-main, #333);">Đồng bộ dữ liệu đám mây (Supabase)</h3>
-                    <p style="color:var(--text-secondary, #666); font-size:0.9rem; margin-bottom:16px;">Đăng nhập bằng tài khoản Google để bảo mật và đồng bộ dữ liệu hồ sơ của bạn.</p>
-                    <button onclick="loginWithGoogle()" style="background:#4285F4; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
-                        <i class="fab fa-google"></i> Đăng nhập / Đăng ký với Google
-                    </button>
-                </div>
-            `;
+                `;
+            } else {
+                userStatusEl.innerHTML = `
+                    <div style="background:var(--card-bg, #fff); padding:20px; border-radius:8px; border:1px solid var(--border-color,#ddd); text-align:center;">
+                        <h3 style="margin-top:0;">Đồng bộ dữ liệu đám mây (Supabase)</h3>
+                        <p style="color:var(--text-secondary, #666); font-size:0.9rem; margin-bottom:16px;">Đăng nhập Google để bảo mật và đồng bộ hồ sơ.</p>
+                        <button onclick="loginWithGoogle()" style="background:#4285F4; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                            <i class="fab fa-google"></i> Đăng nhập với Google
+                        </button>
+                    </div>
+                `;
+            }
         }
     }
 
@@ -201,13 +190,6 @@ function initUI() {
         });
     }
 
-    const btnSync = document.getElementById('btn-sync');
-    if (btnSync) {
-        btnSync.addEventListener('click', () => {
-            alert('Dữ liệu đã được liên kết trực tiếp và đồng bộ tự động với Supabase Cloud!');
-        });
-    }
-
     const searchInput = document.getElementById('global-search');
     if (searchInput) {
         let timeoutId = null;
@@ -222,7 +204,6 @@ function initUI() {
         });
     }
 
-    // Khởi tạo xác thực Supabase Auth trên giao diện
     initAuth();
 
     window.db.get('profile', 1).then(profile => {
@@ -231,19 +212,16 @@ function initUI() {
             if (profile.avatar) {
                 navAvatar.src = profile.avatar;
             } else if (profile.fullname) {
-                const name = encodeURIComponent(profile.fullname);
-                navAvatar.src = `https://ui-avatars.com/api/?name=${name}&background=0078D4&color=fff`;
+                navAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.fullname)}&background=0078D4&color=fff`;
             }
         }
     });
 }
 
 window.addEventListener('hashchange', () => {
-    const hash = window.location.hash.substring(1);
-    loadModule(hash);
+    loadModule(window.location.hash.substring(1));
 });
 
-// Khởi chạy ứng dụng ban đầu
 initUI();
 if (!window.location.hash) {
     window.location.hash = '#dashboard';
@@ -251,14 +229,14 @@ if (!window.location.hash) {
     loadModule(window.location.hash.substring(1));
 }
 
-// --- XỬ LÝ SỰ KIỆN TOÀN CỤC CHO CÁC MODULE ---
+// --- CÁC HÀM TIỆN ÍCH TOÀN CỤC ---
 window.viewImage = (imgSrc) => {
     let modal = document.getElementById('image-viewer-modal');
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'image-viewer-modal';
         modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:9999; cursor:pointer;';
-        modal.innerHTML = `<img id="modal-img" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" />`;
+        modal.innerHTML = `<img id="modal-img" style="max-width:90%; max-height:90%; border-radius:8px;" />`;
         modal.onclick = () => modal.style.display = 'none';
         document.body.appendChild(modal);
     }
@@ -266,53 +244,6 @@ window.viewImage = (imgSrc) => {
     modal.style.display = 'flex';
 };
 
-window.viewEvidence = (id) => { alert("Xem chi tiết minh chứng ID: " + id); };
-window.editEvidence = (id) => { alert("Chỉnh sửa minh chứng ID: " + id); };
-window.deleteEvidence = async (id) => {
-    if (confirm("Bạn có chắc chắn muốn xóa minh chứng này không?")) {
-        if (window.db && typeof window.db.delete === 'function') {
-            await window.db.delete('ed_evidences', id);
-        }
-        location.reload();
-    }
-};
-
-window.viewGallery = (id) => { alert("Xem chi tiết gallery ID: " + id); };
-window.editGallery = (id) => { alert("Chỉnh sửa gallery ID: " + id); };
-window.deleteGallery = async (id) => {
-    if (confirm("Bạn có chắc chắn muốn xóa ảnh/video này không?")) {
-        if (window.db && typeof window.db.delete === 'function') {
-            await window.db.delete('ed_evidences', id);
-        }
-        location.reload();
-    }
-};
-
-window.viewLearningItem = (id) => { alert("Xem học liệu ID: " + id); };
-window.editLearningItem = (id) => { alert("Chỉnh sửa học liệu ID: " + id); };
-window.deleteLearningItem = async (id) => {
-    if (confirm("Bạn có chắc chắn muốn xóa học liệu này không?")) {
-        if (window.db && typeof window.db.delete === 'function') {
-            await window.db.delete('learning_materials', id);
-        }
-        location.reload();
-    }
-    // --- XỬ LÝ SỰ KIỆN TOÀN CỤC CHO CÁC MODULE ---
-window.viewImage = (imgSrc) => {
-    let modal = document.getElementById('image-viewer-modal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'image-viewer-modal';
-        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:9999; cursor:pointer;';
-        modal.innerHTML = `<img id="modal-img" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" />`;
-        modal.onclick = () => modal.style.display = 'none';
-        document.body.appendChild(modal);
-    }
-    document.getElementById('modal-img').src = imgSrc;
-    modal.style.display = 'flex';
-};
-
-// Hàm xóa chung tổng quát hoạt động cho mọi module (Truyền đúng tên store và id)
 window.removeItem = async function(storeName, id, confirmMessage = "Bạn có chắc chắn muốn xóa mục này không?") {
     if (confirm(confirmMessage)) {
         if (window.db && typeof window.db.delete === 'function') {
@@ -323,18 +254,12 @@ window.removeItem = async function(storeName, id, confirmMessage = "Bạn có ch
             } else {
                 alert("Xóa thất bại, vui lòng kiểm tra lại kết nối cơ sở dữ liệu.");
             }
-        } else {
-            alert("Lỗi: Phương thức xóa dữ liệu chưa sẵn sàng.");
         }
     }
 };
 
-// Cụ thể hóa các hàm xóa cho từng module để tương thích ngược tuyệt đối với code cũ
 window.deleteEvidence = (id) => window.removeItem('evidences', id, "Bạn có chắc chắn muốn xóa minh chứng này không?");
 window.deleteGallery = (id) => window.removeItem('gallery', id, "Bạn có chắc chắn muốn xóa ảnh/video này không?");
 window.deleteLearningItem = (id) => window.removeItem('learning_materials', id, "Bạn có chắc chắn muốn xóa học liệu này không?");
-
-// Bổ sung riêng cho Mục 5 (AI Prompts) và Mục 8 (Competitions)
 window.deleteAIPrompt = (id) => window.removeItem('ai_prompts', id, "Bạn có chắc chắn muốn xóa Prompt AI này không?");
 window.deleteCompetition = (id) => window.removeItem('competitions', id, "Bạn có chắc chắn muốn xóa mục thi đua này không?");
-};
