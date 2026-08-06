@@ -5,14 +5,12 @@ export function init() {
     const form = document.getElementById('ai-form');
     const listEl = document.getElementById('ai-list');
 
-    let editingId = null; // Biến lưu ID khi đang ở chế độ sửa
+    let editingId = null;
 
     if (btnAdd && formContainer && form) {
         btnAdd.addEventListener('click', () => {
-            editingId = null; // Reset về chế độ thêm mới
+            editingId = null;
             form.reset();
-            const titleEl = document.getElementById('form-title-ai');
-            if (titleEl) titleEl.innerText = 'Thêm Prompt Mới';
             formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
         });
     }
@@ -28,14 +26,16 @@ export function init() {
         listEl.innerHTML = prompts.map(p => {
             const itemId = p.id || '';
             const safeContent = (p.content || '').replace(/'/g, "\\'").replace(/\n/g, '\\n');
-            
-            // Mã hóa dữ liệu JSON an toàn để đưa vào hàm edit
             const pJson = encodeURIComponent(JSON.stringify(p));
+            
+            // Lấy tiêu đề làm điểm nhấn chính (bỏ badge tím thừa phía trên)
+            const displayTitle = p.title || p.category || 'Prompt AI';
+            const displayCategory = p.category ? `Danh mục: ${p.category}` : '';
 
             return `
-                <div class="card" style="margin-bottom:0;">
+                <div class="card" style="margin-bottom:10px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="badge badge-purple">${p.category || 'Chung'}</span>
+                        <h4 style="margin: 0; color: var(--m365-blue);">${displayTitle}</h4>
                         <div>
                             <button class="btn btn-warning btn-sm" onclick="window.editPromptItem('${pJson}')" style="padding:4px 8px; cursor:pointer; margin-right:5px;" title="Sửa">
                                 <i class="fas fa-edit"></i>
@@ -45,8 +45,8 @@ export function init() {
                             </button>
                         </div>
                     </div>
-                    <h4 style="margin: 10px 0; color: var(--m365-blue);">${p.title || 'Không có tiêu đề'}</h4>
-                    <div style="background: var(--bg-color); padding: 10px; border-radius: 4px; font-family: monospace; font-size:0.85rem; max-height:100px; overflow-y:auto; white-space: pre-wrap;">
+                    ${displayCategory ? `<p style="margin: 6px 0 0 0; font-weight: 500; font-size: 0.85rem; color: var(--text-secondary);">${displayCategory}</p>` : ''}
+                    <div style="background: var(--bg-color); padding: 10px; border-radius: 4px; font-family: monospace; font-size:0.85rem; max-height:100px; overflow-y:auto; white-space: pre-wrap; margin-top: 8px;">
                         ${p.content || ''}
                     </div>
                     <button class="btn btn-outline" style="margin-top:10px; width:100%; cursor:pointer;" onclick="window.copyPromptContent('${safeContent}')">
@@ -57,14 +57,13 @@ export function init() {
         }).join('');
     }
 
-    // Hàm chuẩn bị dữ liệu lên form để sửa
     window.editPromptItem = (encodedJson) => {
         const p = JSON.parse(decodeURIComponent(encodedJson));
         editingId = p.id;
 
-        document.getElementById('ai_title').value = p.title || '';
+        if (document.getElementById('ai_title')) document.getElementById('ai_title').value = p.title || '';
         if (document.getElementById('ai_category')) document.getElementById('ai_category').value = p.category || '';
-        document.getElementById('ai_content').value = p.content || '';
+        if (document.getElementById('ai_content')) document.getElementById('ai_content').value = p.content || '';
 
         if (formContainer) formContainer.style.display = 'block';
     };
@@ -94,29 +93,29 @@ export function init() {
 
             if (!titleEl || !contentEl) return;
 
+            const dataPayload = {
+                title: titleEl.value,
+                category: categoryEl ? categoryEl.value : 'Chung',
+                content: contentEl.value,
+                updatedAt: new Date().toISOString()
+            };
+
             if (editingId) {
-                // Chế độ Cập nhật (Sửa)
                 const existingData = await window.db.getAll('ai_prompts');
                 const target = existingData.find(item => item.id == editingId);
                 
                 const updatedData = {
                     ...(target || {}),
-                    id: editingId,
-                    title: titleEl.value,
-                    category: categoryEl ? categoryEl.value : 'Chung',
-                    content: contentEl.value,
-                    updatedAt: new Date().toISOString()
+                    ...dataPayload,
+                    id: editingId
                 };
 
                 await window.db.save('ai_prompts', updatedData, editingId);
                 alert('Đã cập nhật Prompt thành công!');
             } else {
-                // Chế độ Thêm mới
                 const newData = {
+                    ...dataPayload,
                     id: String(Date.now()),
-                    title: titleEl.value,
-                    category: categoryEl ? categoryEl.value : 'Chung',
-                    content: contentEl.value,
                     createdAt: new Date().toISOString()
                 };
                 await window.db.save('ai_prompts', newData, newData.id);

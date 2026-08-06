@@ -27,14 +27,14 @@ export function init() {
             const itemId = item.id || '';
             const itemJson = encodeURIComponent(JSON.stringify(item));
             
-            // Hiển thị ưu tiên title, nếu không có lấy category hoặc năm học
-            const displayTitle = item.title || item.category || item.name || 'Thành tích thi đua';
-            const displaySub = item.description || item.year || '';
+            const displayTitle = item.category || item.title || 'Thành tích thi đua';
+            const displaySub = item.description || item.content || '';
 
             return `
                 <div class="card" style="margin-bottom:10px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="badge badge-purple">${item.category || 'Thi đua'}</span>
+                        <!-- Đã loại bỏ thẻ badge màu tím ở đây để tránh trùng lặp -->
+                        <h4 style="margin: 0; color: var(--m365-blue);">${displayTitle}</h4>
                         <div>
                             <button class="btn btn-warning btn-sm" onclick="window.editCompetitionItem('${itemJson}')" style="padding:4px 8px; cursor:pointer; margin-right:5px;" title="Sửa">
                                 <i class="fas fa-edit"></i>
@@ -44,25 +44,22 @@ export function init() {
                             </button>
                         </div>
                     </div>
-                    <h4 style="margin: 10px 0; color: var(--m365-blue);">${displayTitle}</h4>
-                    ${item.year ? `<p style="margin: 4px 0; font-weight: 500; font-size: 0.85rem; color: var(--text-secondary);">Năm học: ${item.year}</p>` : ''}
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">${displaySub}</p>
+                    ${item.year ? `<p style="margin: 6px 0 0 0; font-weight: 500; font-size: 0.85rem; color: var(--text-secondary);">Năm học: ${item.year}</p>` : ''}
+                    ${displaySub ? `<p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 6px; margin-bottom: 0;">${displaySub}</p>` : ''}
                 </div>
             `;
         }).join('');
     }
 
-    // Đưa dữ liệu cũ lên form để sửa
     window.editCompetitionItem = (encodedJson) => {
         const item = JSON.parse(decodeURIComponent(encodedJson));
         editingId = item.id;
 
-        // Tự động tìm các input trong form để gán giá trị
         const selects = form.querySelectorAll('select');
         const inputs = form.querySelectorAll('input:not([type="hidden"]), textarea');
 
         if (selects.length > 0) selects[0].value = item.category || selects[0].value;
-        if (inputs.length > 0) inputs[0].value = item.year || item.title || '';
+        if (inputs.length > 0) inputs[0].value = item.year || '';
         if (inputs.length > 1) inputs[1].value = item.description || item.content || '';
 
         if (formContainer) formContainer.style.display = 'block';
@@ -84,19 +81,18 @@ export function init() {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Tự động quét lấy giá trị từ các trường trong form bất kể tên ID gì
             const selects = form.querySelectorAll('select');
             const inputs = form.querySelectorAll('input:not([type="hidden"]), textarea');
 
             const categoryVal = selects.length > 0 ? selects[0].value : 'Thi đua';
-            const field1Val = inputs.length > 0 ? inputs[0].value : '';
-            const field2Val = inputs.length > 1 ? inputs[1].value : '';
+            const yearVal = inputs.length > 0 ? inputs[0].value : '';
+            const descVal = inputs.length > 1 ? inputs[1].value : '';
 
             const dataPayload = {
                 category: categoryVal,
-                title: categoryVal + (field1Val ? ` - ${field1Val}` : ''),
-                year: field1Val,
-                description: field2Val,
+                title: categoryVal,
+                year: yearVal,
+                description: descVal,
                 updatedAt: new Date().toISOString()
             };
 
